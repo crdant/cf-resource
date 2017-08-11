@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/concourse/cf-resource"
-	"github.com/concourse/cf-resource/in"
+	"github.com/crdant/cf-route-resource"
+	"github.com/crdant/cf-route-resource/in"
 )
 
 func main() {
