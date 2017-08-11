@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/concourse/cf-resource/out"
+	"github.com/crdant/cf-route-resource/out"
 )
 
 func main() {

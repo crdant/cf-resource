@@ -1,7 +1,7 @@
 package out_test
 
 import (
-	"github.com/concourse/cf-resource/out"
+	"github.com/crdant/cf-route-resource/out"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

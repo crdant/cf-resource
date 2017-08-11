@@ -8,9 +8,9 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/concourse/cf-resource"
-	"github.com/concourse/cf-resource/out"
-	"github.com/concourse/cf-resource/out/fakes"
+	"github.com/crdant/cf-route-resource"
+	"github.com/crdant/cf-route-resource/out"
+	"github.com/crdant/cf-route-resource/out/fakes"
 	"io"
 	"io/ioutil"
 )

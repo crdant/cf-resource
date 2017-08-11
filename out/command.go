@@ -3,7 +3,7 @@ package out
 import (
 	"time"
 
-	"github.com/concourse/cf-resource"
+	"github.com/crdant/cf-route-resource"
 )
 
 type Command struct {

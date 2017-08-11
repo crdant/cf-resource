@@ -12,7 +12,7 @@ BUILD_DIR=$PWD/built-resource
 (
     set -e
 
-    cd $GOPATH/src/github.com/concourse/cf-resource
+    cd $GOPATH/src/github.com/crdant/cf-route-resource
 
     export GOPATH=${PWD}/Godeps/_workspace:$GOPATH
     export PATH=${PWD}/Godeps/_workspace/bin:$PATH
@@ -37,7 +37,7 @@ BUILD_DIR=$PWD/built-resource
 (
     set -e
 
-    cd $GOPATH/src/github.com/concourse/cf-resource
+    cd $GOPATH/src/github.com/crdant/cf-route-resource
 
     export GOPATH=${PWD}/Godeps/_workspace:$GOPATH
     export PATH=${PWD}/Godeps/_workspace/bin:$PATH
@@ -57,7 +57,7 @@ BUILD_DIR=$PWD/built-resource
 (
     set -e
 
-    cd $GOPATH/src/github.com/concourse/cf-resource
+    cd $GOPATH/src/github.com/crdant/cf-route-resource
 
     cp Dockerfile $BUILD_DIR
 )
