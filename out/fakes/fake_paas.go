@@ -2,8 +2,9 @@
 package fakes
 
 import (
-	"github.com/crdant/cf-route-resource/out"
 	"sync"
+
+	"github.com/crdant/cf-route-resource/out"
 )
 
 type FakePAAS struct {
@@ -27,14 +28,28 @@ type FakePAAS struct {
 	targetReturns struct {
 		result1 error
 	}
-	PushAppStub        func(manifest string, path string, currentAppName string) error
-	pushAppMutex       sync.RWMutex
-	pushAppArgsForCall []struct {
-		manifest       string
-		path           string
-		currentAppName string
+	CreateRouteStub        func(space string, domain string, host string, path string, port int32, randomPort bool) error
+	createRouteMutex       sync.RWMutex
+	createRouteArgsForCall []struct {
+		route []string
 	}
-	pushAppReturns struct {
+	createRouteReturns struct {
+		result1 error
+	}
+	MapRouteStub        func(app string, domain string, host string, path string, port int32) error
+	mapRouteMutex       sync.RWMutex
+	mapRouteArgsForCall []struct {
+		route []string
+	}
+	mapRouteReturns struct {
+		result1 error
+	}
+	UnmapRouteStub        func(app string, domain string, host string, path string, port int32) error
+	unmapRouteMutex       sync.RWMutex
+	unmapRouteArgsForCall []struct {
+		route []string
+	}
+	unmapRouteReturns struct {
 		result1 error
 	}
 }
@@ -107,36 +122,98 @@ func (fake *FakePAAS) TargetReturns(result1 error) {
 	}{result1}
 }
 
-func (fake *FakePAAS) PushApp(manifest string, path string, currentAppName string) error {
-	fake.pushAppMutex.Lock()
-	fake.pushAppArgsForCall = append(fake.pushAppArgsForCall, struct {
-		manifest       string
-		path           string
-		currentAppName string
-	}{manifest, path, currentAppName})
-	fake.pushAppMutex.Unlock()
-	if fake.PushAppStub != nil {
-		return fake.PushAppStub(manifest, path, currentAppName)
+func (fake *FakePAAS) CreateRoute(space string, domain string, host string, path string, port int32, randomPort bool) error {
+	fake.createRouteMutex.Lock()
+	fake.createRouteArgsForCall = append(fake.createRouteArgsForCall, struct {
+		route []string
+	}{[]string{(out.NewRoute(domain, host, path, port, false)).String()}})
+	fake.createRouteMutex.Unlock()
+	if fake.CreateRouteStub != nil {
+		return fake.CreateRouteStub(space, domain, host, path, port, randomPort)
 	} else {
-		return fake.pushAppReturns.result1
+		return fake.createRouteReturns.result1
 	}
 }
 
-func (fake *FakePAAS) PushAppCallCount() int {
-	fake.pushAppMutex.RLock()
-	defer fake.pushAppMutex.RUnlock()
-	return len(fake.pushAppArgsForCall)
+func (fake *FakePAAS) CreateRouteCallCount() int {
+	fake.createRouteMutex.RLock()
+	defer fake.createRouteMutex.RUnlock()
+	return len(fake.createRouteArgsForCall)
 }
 
-func (fake *FakePAAS) PushAppArgsForCall(i int) (string, string, string) {
-	fake.pushAppMutex.RLock()
-	defer fake.pushAppMutex.RUnlock()
-	return fake.pushAppArgsForCall[i].manifest, fake.pushAppArgsForCall[i].path, fake.pushAppArgsForCall[i].currentAppName
+func (fake *FakePAAS) CreateRouteArgsForCall(i int) []string {
+	fake.createRouteMutex.RLock()
+	defer fake.createRouteMutex.RUnlock()
+	return fake.createRouteArgsForCall[i].route
 }
 
-func (fake *FakePAAS) PushAppReturns(result1 error) {
-	fake.PushAppStub = nil
-	fake.pushAppReturns = struct {
+func (fake *FakePAAS) CreateRouteReturns(result1 error) {
+	fake.CreateRouteStub = nil
+	fake.createRouteReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakePAAS) MapRoute(app string, domain string, host string, path string, port int32) error {
+	fake.mapRouteMutex.Lock()
+	fake.mapRouteArgsForCall = append(fake.mapRouteArgsForCall, struct {
+		route []string
+	}{[]string{(out.NewRoute(domain, host, path, port, false)).String()}})
+	fake.mapRouteMutex.Unlock()
+	if fake.MapRouteStub != nil {
+		return fake.MapRouteStub(app, domain, host, path, port)
+	} else {
+		return fake.mapRouteReturns.result1
+	}
+}
+
+func (fake *FakePAAS) mapRouteCallCount() int {
+	fake.mapRouteMutex.RLock()
+	defer fake.mapRouteMutex.RUnlock()
+	return len(fake.mapRouteArgsForCall)
+}
+
+func (fake *FakePAAS) MapRouteArgsForCall(i int) []string {
+	fake.mapRouteMutex.RLock()
+	defer fake.mapRouteMutex.RUnlock()
+	return fake.mapRouteArgsForCall[i].route
+}
+
+func (fake *FakePAAS) MapRouteReturns(result1 error) {
+	fake.MapRouteStub = nil
+	fake.mapRouteReturns = struct {
+		result1 error
+	}{result1}
+}
+
+func (fake *FakePAAS) UnmapRoute(app string, domain string, host string, path string, port int32) error {
+	fake.unmapRouteMutex.Lock()
+	fake.unmapRouteArgsForCall = append(fake.unmapRouteArgsForCall, struct {
+		route []string
+	}{[]string{(out.NewRoute(domain, host, path, port, false)).String()}})
+	fake.unmapRouteMutex.Unlock()
+	if fake.UnmapRouteStub != nil {
+		return fake.UnmapRouteStub(app, domain, host, path, port)
+	} else {
+		return fake.unmapRouteReturns.result1
+	}
+}
+
+func (fake *FakePAAS) unmapRouteCallCount() int {
+	fake.unmapRouteMutex.RLock()
+	defer fake.unmapRouteMutex.RUnlock()
+	return len(fake.unmapRouteArgsForCall)
+}
+
+func (fake *FakePAAS) UnmapRouteArgsForCall(i int) []string {
+	fake.unmapRouteMutex.RLock()
+	defer fake.unmapRouteMutex.RUnlock()
+	return fake.unmapRouteArgsForCall[i].route
+}
+
+func (fake *FakePAAS) UnmapRouteReturns(result1 error) {
+	fake.UnmapRouteStub = nil
+	fake.unmapRouteReturns = struct {
 		result1 error
 	}{result1}
 }
