@@ -41,7 +41,7 @@ func (cf *CloudFoundry) Target(organization string, space string) error {
 func (cf *CloudFoundry) CreateRoute(space string, domain string, host string, path string, port int32, randomPort bool) error {
 	args := []string{"create-route", space, domain}
 	if len(host) > 0 {
-		args = append(args, "--host", host)
+		args = append(args, "--hostname", host)
 
 	}
 	if len(path) > 0 {
@@ -59,7 +59,7 @@ func (cf *CloudFoundry) CreateRoute(space string, domain string, host string, pa
 func (cf *CloudFoundry) MapRoute(app string, domain string, host string, path string, port int32) error {
 	args := []string{"map-route", app, domain}
 	if len(host) > 0 {
-		args = append(args, "--host", host)
+		args = append(args, "--hostname", host)
 
 	}
 	if len(path) > 0 {
@@ -75,7 +75,7 @@ func (cf *CloudFoundry) MapRoute(app string, domain string, host string, path st
 func (cf *CloudFoundry) UnmapRoute(app string, domain string, host string, path string, port int32) error {
 	args := []string{"unmap-route", app, domain}
 	if len(host) > 0 {
-		args = append(args, "--host", host)
+		args = append(args, "--hostname", host)
 
 	}
 	if len(path) > 0 {
