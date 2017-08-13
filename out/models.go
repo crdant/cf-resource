@@ -8,10 +8,11 @@ type Request struct {
 }
 
 type Params struct {
-	Create     []string `json:"create"`
-	RandomPort bool     `json:"randomPort"`
-	Map        []string `json:"unmap"`
-	Unmap      []string `json:"map"`
+	Application string   `json:"application"`
+	Create      []string `json:"create"`
+	RandomPort  bool     `json:"randomPort"`
+	Map         []string `json:"unmap"`
+	Unmap       []string `json:"map"`
 }
 
 type Response struct {
