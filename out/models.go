@@ -8,10 +8,10 @@ type Request struct {
 }
 
 type Params struct {
-	ManifestPath         string            `json:"manifest"`
-	Path                 string            `json:"path"`
-	CurrentAppName       string            `json:"current_app_name"`
-	EnvironmentVariables map[string]string `json:"environment_variables"`
+	Create     []string `json:"create"`
+	RandomPort bool     `json:"randomPort"`
+	Map        []string `json:"unmap"`
+	Unmap      []string `json:"map"`
 }
 
 type Response struct {
