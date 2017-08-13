@@ -19,6 +19,7 @@ func NewRoute(domain string, host string, path string, port int32, randomPort bo
 	r.domain = domain
 	r.host = host
 	r.path = path
+	r.port = port
 	r.randomPort = randomPort
 	return r
 }
@@ -30,26 +31,46 @@ func ParseRoute(route string, randomPort bool) (*Route, error) {
 		return nil, err
 	}
 
-	p, err := strconv.ParseInt(url.Port(), 0, 32)
-	if err != nil {
+	if len(url.Port()) > 0 {
+		p, err := strconv.Atoi(url.Port())
+		if err != nil {
+			return nil, err
+		}
 		r.port = int32(p)
 	}
 
-	r.path = url.RequestURI()
-	fqdn := strings.SplitN(url.Hostname(), ".", 2)
-	r.host = fqdn[0]
-	r.domain = fqdn[1]
+	uri := url.RequestURI()
+	if uri != "/" {
+		r.path = strings.Trim(uri, "/")
+	}
+
+	if r.port > 0 || randomPort {
+		r.domain = url.Hostname()
+	} else {
+		fqdn := strings.SplitN(url.Hostname(), ".", 2)
+		r.host = fqdn[0]
+		r.domain = fqdn[1]
+	}
+
+	r.randomPort = randomPort
 	return r, nil
 }
 
 func (route *Route) String() string {
-	s := route.host + "." + route.domain
+	var s string
+
+	if len(route.host) > 0 {
+		s = route.host + "." + route.domain
+	} else {
+		s = route.domain
+	}
+
+	if route.port > 0 {
+		s = s + ":" + strconv.Itoa(int(route.port))
+	}
 
 	if len(route.path) > 0 {
 		s = s + "/" + route.path
-	}
-	if route.port > 0 {
-		s = s + ":" + strconv.Itoa(int(route.port))
 	}
 
 	return s
