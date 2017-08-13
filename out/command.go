@@ -35,17 +35,51 @@ func (command *Command) Run(request Request) (Response, error) {
 		return Response{}, err
 	}
 
-	if err := command.setEnvironmentVariables(request); err != nil {
-		return Response{}, err
+	if request.Params.Create != nil {
+		for _, r := range request.Params.Create {
+
+			route, err := ParseRoute(r, request.Params.RandomPort)
+			if err != nil {
+				return Response{}, err
+			}
+			err = command.paas.CreateRoute(request.Source.Space, route.domain, route.host, route.path, route.port, route.randomPort)
+			if err != nil {
+				return Response{}, err
+			}
+
+		}
 	}
 
-	err = command.paas.PushApp(
-		request.Params.ManifestPath,
-		request.Params.Path,
-		request.Params.CurrentAppName,
-	)
-	if err != nil {
-		return Response{}, err
+	if request.Params.Map != nil {
+		for _, r := range request.Params.Map {
+
+			route, err := ParseRoute(r, request.Params.RandomPort)
+			if err != nil {
+				return Response{}, err
+			}
+
+			err = command.paas.MapRoute(request.Params.Application, route.domain, route.host, route.path, route.port)
+			if err != nil {
+				return Response{}, err
+			}
+
+		}
+	}
+
+	if request.Params.Unmap != nil {
+		for _, r := range request.Params.Unmap {
+
+			route, err := ParseRoute(r, request.Params.RandomPort)
+			if err != nil {
+				return Response{}, err
+			}
+
+			err = command.paas.UnmapRoute(request.Params.Application, route.domain, route.host, route.path, route.port)
+			if err != nil {
+				return Response{}, err
+			}
+
+		}
 	}
 
 	return Response{
@@ -63,26 +97,4 @@ func (command *Command) Run(request Request) (Response, error) {
 			},
 		},
 	}, nil
-}
-
-func (command *Command) setEnvironmentVariables(request Request) error {
-	if len(request.Params.EnvironmentVariables) == 0 {
-		return nil
-	}
-
-	manifest, err := NewManifest(request.Params.ManifestPath)
-	if err != nil {
-		return err
-	}
-
-	for key, value := range request.Params.EnvironmentVariables {
-		manifest.AddEnvironmentVariable(key, value)
-	}
-
-	err = manifest.Save(request.Params.ManifestPath)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

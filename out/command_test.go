@@ -75,8 +75,13 @@ var _ = Describe("Out Command", func() {
 			By("creating the route")
 			Expect(cloudFoundry.CreateRouteCallCount()).To(Equal(1))
 
-			routes := cloudFoundry.CreateRouteArgsForCall(0)
-			Expect(routes).To(Equal([]string{"foo.example.com"}))
+			space, domain, host, path, port, randomPort := cloudFoundry.CreateRouteArgsForCall(0)
+			Expect(space).To(Equal("volcano-base"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(Equal("foo"))
+			Expect(path).To(BeEmpty())
+			Expect(port).To(BeZero())
+			Expect(randomPort).To(BeFalse())
 		})
 
 		Describe("handling any errors", func() {
@@ -109,7 +114,7 @@ var _ = Describe("Out Command", func() {
 		})
 
 		It("lets people skip the certificate check", func() {
-			request.Source.SkipCertCheck = false
+			request.Source.SkipCertCheck = true
 
 			_, err := command.Run(request)
 			Expect(err).NotTo(HaveOccurred())
@@ -119,6 +124,7 @@ var _ = Describe("Out Command", func() {
 
 			_, _, _, insecure := cloudFoundry.LoginArgsForCall(0)
 			Expect(insecure).To(Equal(true))
+			request.Source.SkipCertCheck = false
 		})
 
 		// It("lets people create multiple routes", func() {
@@ -185,12 +191,17 @@ var _ = Describe("Out Command", func() {
 			By("creating the route")
 			Expect(cloudFoundry.CreateRouteCallCount()).To(Equal(1))
 
-			routes := cloudFoundry.CreateRouteArgsForCall(0)
-			Expect(routes).To(Equal([]string{"foo.example.com/bar"}))
+			space, domain, host, path, port, randomPort := cloudFoundry.CreateRouteArgsForCall(0)
+			Expect(space).To(Equal("volcano-base"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(Equal("foo"))
+			Expect(path).To(Equal("bar"))
+			Expect(port).To(BeZero())
+			Expect(randomPort).To(BeFalse())
 		})
 
 		It("creates a new tcp route in cloud foundry", func() {
-			request.Params.Create = []string{"foo.example.com:1202"}
+			request.Params.Create = []string{"example.com:1202"}
 
 			response, err := command.Run(request)
 			Expect(err).NotTo(HaveOccurred())
@@ -228,11 +239,19 @@ var _ = Describe("Out Command", func() {
 			By("creating the route")
 			Expect(cloudFoundry.CreateRouteCallCount()).To(Equal(1))
 
-			routes := cloudFoundry.CreateRouteArgsForCall(0)
-			Expect(routes).To(Equal([]string{"foo.example.com:1202"}))
+			space, domain, host, path, port, randomPort := cloudFoundry.CreateRouteArgsForCall(0)
+			Expect(space).To(Equal("volcano-base"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(BeEmpty())
+			Expect(path).To(BeEmpty())
+			Expect(port).To(BeEquivalentTo(1202))
+			Expect(randomPort).To(BeFalse())
 		})
 
 		It("lets people use a random port", func() {
+			request.Params.Create = []string{"example.com"}
+			request.Params.RandomPort = true
+
 			response, err := command.Run(request)
 			Expect(err).NotTo(HaveOccurred())
 
@@ -269,8 +288,13 @@ var _ = Describe("Out Command", func() {
 			By("creating the route")
 			Expect(cloudFoundry.CreateRouteCallCount()).To(Equal(1))
 
-			routes := cloudFoundry.CreateRouteArgsForCall(0)
-			Expect(routes).To(Equal("foo.example.com"))
+			space, domain, host, path, port, randomPort := cloudFoundry.CreateRouteArgsForCall(0)
+			Expect(space).To(Equal("volcano-base"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(BeEmpty())
+			Expect(path).To(BeEmpty())
+			Expect(port).To(BeZero())
+			Expect(randomPort).To(BeTrue())
 		})
 
 		It("maps a route in cloud foundry", func() {
@@ -281,10 +305,11 @@ var _ = Describe("Out Command", func() {
 					Password:      "hunter2",
 					Organization:  "secret",
 					Space:         "volcano-base",
-					SkipCertCheck: true,
+					SkipCertCheck: false,
 				},
 				Params: out.Params{
-					Create: []string{"foo.example.com"},
+					Application: "baz",
+					Map:         []string{"foo.example.com"},
 				},
 			}
 
@@ -294,8 +319,28 @@ var _ = Describe("Out Command", func() {
 			By("logging in")
 			Expect(cloudFoundry.LoginCallCount()).To(Equal(1))
 
-			_, _, _, insecure := cloudFoundry.LoginArgsForCall(0)
-			Expect(insecure).To(Equal(true))
+			api, username, password, insecure := cloudFoundry.LoginArgsForCall(0)
+			Expect(api).To(Equal("https://api.run.pivotal.io"))
+			Expect(username).To(Equal("awesome@example.com"))
+			Expect(password).To(Equal("hunter2"))
+			Expect(insecure).To(Equal(false))
+
+			By("targetting the organization and space")
+			Expect(cloudFoundry.TargetCallCount()).To(Equal(1))
+
+			org, space := cloudFoundry.TargetArgsForCall(0)
+			Expect(org).To(Equal("secret"))
+			Expect(space).To(Equal("volcano-base"))
+
+			By("mapping the route")
+			Expect(cloudFoundry.MapRouteCallCount()).To(Equal(1))
+
+			app, domain, host, path, port := cloudFoundry.MapRouteArgsForCall(0)
+			Expect(app).To(Equal("baz"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(Equal("foo"))
+			Expect(path).To(BeEmpty())
+			Expect(port).To(BeZero())
 		})
 
 		// It("lets people map multiple routes", func() {
@@ -331,10 +376,11 @@ var _ = Describe("Out Command", func() {
 					Password:      "hunter2",
 					Organization:  "secret",
 					Space:         "volcano-base",
-					SkipCertCheck: true,
+					SkipCertCheck: false,
 				},
 				Params: out.Params{
-					Create: []string{"foo.example.com"},
+					Application: "baz",
+					Unmap:       []string{"foo.example.com"},
 				},
 			}
 
@@ -344,8 +390,28 @@ var _ = Describe("Out Command", func() {
 			By("logging in")
 			Expect(cloudFoundry.LoginCallCount()).To(Equal(1))
 
-			_, _, _, insecure := cloudFoundry.LoginArgsForCall(0)
-			Expect(insecure).To(Equal(true))
+			api, username, password, insecure := cloudFoundry.LoginArgsForCall(0)
+			Expect(api).To(Equal("https://api.run.pivotal.io"))
+			Expect(username).To(Equal("awesome@example.com"))
+			Expect(password).To(Equal("hunter2"))
+			Expect(insecure).To(Equal(false))
+
+			By("targetting the organization and space")
+			Expect(cloudFoundry.TargetCallCount()).To(Equal(1))
+
+			org, space := cloudFoundry.TargetArgsForCall(0)
+			Expect(org).To(Equal("secret"))
+			Expect(space).To(Equal("volcano-base"))
+
+			By("unmapping the route")
+			Expect(cloudFoundry.UnmapRouteCallCount()).To(Equal(1))
+
+			app, domain, host, path, port := cloudFoundry.UnmapRouteArgsForCall(0)
+			Expect(app).To(Equal("baz"))
+			Expect(domain).To(Equal("example.com"))
+			Expect(host).To(Equal("foo"))
+			Expect(path).To(BeEmpty())
+			Expect(port).To(BeZero())
 		})
 
 		// It("lets people unmap multiple routes", func() {
