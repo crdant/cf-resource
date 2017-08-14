@@ -17,17 +17,7 @@ An output only resource (at the moment) that will create/map/unmap routes for cl
 
 ### `out`: Create, Map, or Unmap Routes
 
-Pushes an application to the Cloud Foundry detailed in the source
-configuration. A [manifest][cf-manifests] that describes the application must
-be specified.
-
-[cf-manifests]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
-
-Application string   `json:"application"`
-Create      []string `json:"create"`
-RandomPort  bool     `json:"randomPort"`
-Map         []string `json:"unmap"`
-Unmap       []string `json:"map"`
+Creates, maps, or unmaps routes in Cloud Foundry. Mapping and unmapping require an application to be specified. Routes can be created without mapping them to an application as well.
 
 #### Parameters
 
