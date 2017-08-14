@@ -1,13 +1,9 @@
 #!/bin/sh
 
-inputDir=  outputDir= =
+outputDir=
 
 while [ $# -gt 0 ]; do
   case $1 in
-    -i | --input-dir )
-      inputDir=$2
-      shift
-      ;;
     -o | --output-dir )
       outputDir=$2
       shift
@@ -21,14 +17,8 @@ error_and_exit() {
   exit 1
 }
 
-if [ ! -d "$inputDir" ]; then
-  error_and_exit "missing input directory: $inputDir"
-fi
 if [ ! -d "$outputDir" ]; then
   error_and_exit "missing output directory: $outputDir"
-fi
-if [ ! -d "$glideRelease" ]; then
-  error_and_exit "missing output directory: $glideRelease"
 fi
 
 cd $outputDir
