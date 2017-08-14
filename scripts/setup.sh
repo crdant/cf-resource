@@ -28,7 +28,7 @@ while [ $# -gt 0 ]; do
       username=$2
       shift
       ;;
-    -p | --password )
+    -d | --password )
       password=$2
       shift
       ;;
@@ -73,7 +73,7 @@ if [ -n "${username}" ]; then
 fi
 
 if [ -n "${password}" ]; then
-  loginFlags="-p ${password}"
+  loginFlags="${loginFlags} -p ${password}"
 fi
 
 if [ -z "${credentialsFile}" ]; then
