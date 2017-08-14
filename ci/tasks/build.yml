@@ -18,5 +18,4 @@ run:
   args: [
     --input-dir, source,
     --output-dir, build,
-    --package-name, 
   ]

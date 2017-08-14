@@ -12,10 +12,6 @@ while [ $# -gt 0 ]; do
       outputDir=$2
       shift
       ;;
-    -p | --package-name )
-      packageName=$2
-      shift
-      ;;
     * )
       echo "Unrecognized option: $1" 1>&2
       exit 1
