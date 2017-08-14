@@ -31,4 +31,5 @@ if [ ! -d "$glideRelease" ]; then
   error_and_exit "missing output directory: $glideRelease"
 fi
 
-tar -C $outputDir -xzvf $inputDir/cf-cli_*_linux-x86-64.tar.gz
+cd $outputDir
+curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar -zx

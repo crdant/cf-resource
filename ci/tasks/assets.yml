@@ -7,14 +7,11 @@ image_resource:
     repository: concourse/buildroot
     tag: git
 
-inputs:
-  - name: cf-cli
-
 outputs:
   - name: build
 
 run:
-  path: source/ci/tasks/assemble.sh
+  path: source/ci/tasks/assets.sh
   args: [
     --input-dir, cf-cli,
     --output-dir, build
