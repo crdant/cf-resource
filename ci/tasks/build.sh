@@ -12,7 +12,7 @@ while [ $# -gt 0 ]; do
       outputDir=$2
       shift
       ;;
-    -p | --packageName )
+    -p | --package-name )
       packageName=$2
       shift
       ;;
