@@ -27,3 +27,5 @@ _testmain.go
 /test.json
 /*.tar.gz
 /built*
+credentials.yml
+/vendor
