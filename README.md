@@ -1,7 +1,6 @@
-# Cloud Foundry Resource
+# Cloud Foundry Route Resource
 
-An output only resource (at the moment) that will deploy an application to a
-Cloud Foundry deployment.
+An output only resource (at the moment) that will create/map/unmap routes for cloud foundry.
 
 ## Source Configuration
 
@@ -16,7 +15,7 @@ Cloud Foundry deployment.
 
 ## Behaviour
 
-### `out`: Deploy an application to a Cloud Foundry
+### `out`: Create, Map, or Unmap Routes
 
 Pushes an application to the Cloud Foundry detailed in the source
 configuration. A [manifest][cf-manifests] that describes the application must
@@ -24,47 +23,18 @@ be specified.
 
 [cf-manifests]: http://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html
 
+Application string   `json:"application"`
+Create      []string `json:"create"`
+RandomPort  bool     `json:"randomPort"`
+Map         []string `json:"unmap"`
+Unmap       []string `json:"map"`
+
 #### Parameters
 
-* `manifest`: *Required.* Path to a application manifest file.
-* `path`: *Optional.* Path to the application to push. If this isn't set then
-  it will be read from the manifest instead.
-* `current_app_name`: *Optional.* This should be the name of the application
-  that this will re-deploy over. If this is set the resource will perform a
-  zero-downtime deploy.
+*N.B. one of `map`, `create`, or `unmap` must be provided*
 
-## Pipeline example
-
-```yaml
----
-jobs:
-- name: job-deploy-app
-  public: true
-  serial: true
-  plan:
-  - get: resource-web-app
-  - task: build
-    file: resource-web-app/build.yml
-  - put: resource-deploy-web-app
-    params:
-      manifest: build-output/manifest.yml
-      environment_variables:
-        key: value
-        key2: value2
-
-resources:
-- name: resource-web-app
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry-community/simple-go-web-app.git
-
-- name: resource-deploy-web-app
-  type: cf
-  source:
-    api: https://api.run.pivotal.io
-    username: EMAIL
-    password: PASSWORD
-    organization: ORG
-    space: SPACE
-    skip_cert_check: false
-```
+* `create`: *Required.* One or more routes to create, in the same format as a  route specified in a [Cloud Foundry manifest](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html).
+* `map`: *Optional.* One or more routes to map to an application, in the same format as a  route specified in a [Cloud Foundry manifest](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html). Requires that `application` be specified.
+* `unmap`: *Optional.* One or more routes to unmap from an application, in the same format as a  route specified in a [Cloud Foundry manifest](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html). Requires that `application` be specified.
+* `application`: *Optional.* The name of an application for which to map/unmap the route. Required if `map` or `unmap` is provided.
+* `randomPort`: *Optional.* Use a random port when creating a TCP route. Specify only the domain for `create` when using this option.
