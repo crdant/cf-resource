@@ -1,4 +1,4 @@
 resource-name: cf-route-resource
 git-server-base: "https://github.com/"
-git-branch: glide
+git-branch: master
 version-git-branch: version
