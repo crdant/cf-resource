@@ -8,14 +8,10 @@ jobs:
     trigger: true
   - get: version
     params: { pre: rc }
-  - get: cf-cli
-    params:
-      globs:
-      - cf-cli_*_linux-x86-64*
   - task: build
     file: source/ci/tasks/build.yml
-  - task: assemble
-    file: source/ci/tasks/assemble.yml
+  - task: assets
+    file: source/ci/tasks/assets.yml
   - put: resource-image
     params:
       build: build
@@ -33,12 +29,12 @@ resources:
   type: semver
   source:
     branch: version
-    file: current-version
+    key: current-version
     initial_version: 0.1.0-rc.0
     uri: ((git-server-base))/((git-username))/((resource-name))
-    username: ((git-user))
+    username: ((git-username))
     password: ((git-password))
-    git_user: ((get-author))
+    git_user: ((git-author))
 
 - name: resource-image
   type: docker-image
@@ -47,10 +43,3 @@ resources:
     username: ((docker-hub-username))
     password: ((docker-hub-password))
     repository: ((docker-hub-username))/((resource-name))
-
-- name: cf-cli
-  type: github-release
-  source:
-    owner: cloudfoundry
-    repository: cf-cli
-    access_token: ((git-password))
