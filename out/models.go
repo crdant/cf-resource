@@ -11,8 +11,8 @@ type Params struct {
 	Application string   `json:"application"`
 	Create      []string `json:"create"`
 	RandomPort  bool     `json:"randomPort"`
-	Map         []string `json:"unmap"`
-	Unmap       []string `json:"map"`
+	Map         []string `json:"map"`
+	Unmap       []string `json:"unmap"`
 }
 
 type Response struct {
