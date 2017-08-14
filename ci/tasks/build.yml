@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: crdant/glide
+
+inputs:
+  - name: source
+  - name: version
+
+outputs:
+  - name: build
+
+run:
+  path: pcfdemo/ci/tasks/build.sh
+  args: [
+    --input-dir, pcfdemo,
+    --output-dir, build
+  ]

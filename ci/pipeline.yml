@@ -1,0 +1,56 @@
+---
+jobs:
+- name: publish
+  public: true
+  serial: true
+  plan:
+  - get: source
+    trigger: true
+  - get: version
+    params: { pre: rc }
+  - get: cf-cli
+    params:
+      globs:
+      - cf-cli_*_linux-x86-64*
+  - task: build
+    file: source/ci/tasks/build.yml
+  - task: assemble
+    file: source/ci/tasks/assemble.yml
+  - put: resource-image
+    params:
+      build: build
+  - put: version
+    params: { bump: final }
+
+resources:
+- name: source
+  type: git
+  source:
+    uri: ((git-server-base))/((git-username))/((resource-name))
+    branch: ((git-branch))
+
+- name: version
+  type: semver
+  source:
+    branch: version
+    file: current-version
+    initial_version: 0.1.0-rc.0
+    uri: ((git-server-base))/((git-username))/((resource-name))
+    username: ((git-user))
+    password: ((git-password))
+    git_user: ((get-author))
+
+- name: resource-image
+  type: docker-image
+  source:
+    email: ((docker-hub-email))
+    username: ((docker-hub-username))
+    password: ((docker-hub-password))
+    repository: ((docker-hub-username))/((resource-name))
+
+- name: cf-cli
+  type: github-release
+  source:
+    owner: cloudfoundry
+    repository: cf-cli
+    access_token: ((git-password))
