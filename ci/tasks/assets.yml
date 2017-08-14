@@ -7,6 +7,9 @@ image_resource:
     repository: concourse/buildroot
     tag: git
 
+inputs:
+  - name: source
+
 outputs:
   - name: build
 
