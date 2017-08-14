@@ -30,6 +30,7 @@ resources:
 - name: version
   type: semver
   source:
+    driver: git
     branch: version
     file: version
     key: current-version
