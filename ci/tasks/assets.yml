@@ -12,7 +12,7 @@ inputs:
   - name: build
 
 outputs:
-  - name: asssets
+  - name: assets
 
 run:
   path: source/ci/tasks/assets.sh
