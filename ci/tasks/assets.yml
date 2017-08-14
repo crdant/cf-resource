@@ -11,8 +11,12 @@ inputs:
   - name: source
   - name: build
 
+outputs:
+  - name: asssets
+
 run:
   path: source/ci/tasks/assets.sh
   args: [
-    --output-dir, build
+    --input-dir, build,
+    --output-dir, assets
   ]

@@ -1,9 +1,13 @@
 #!/bin/sh
 
-outputDir=
+inputDir= outputDir=
 
 while [ $# -gt 0 ]; do
   case $1 in
+    -i | --input-dir )
+      inputDir=$2
+      shift
+      ;;
     -o | --output-dir )
       outputDir=$2
       shift
@@ -17,11 +21,15 @@ error_and_exit() {
   exit 1
 }
 
+if [ ! -d "$inputDir" ]; then
+  error_and_exit "missing output directory: $inputDir"
+fi
 if [ ! -d "$outputDir" ]; then
   error_and_exit "missing output directory: $outputDir"
 fi
 
 buildRoot=$PWD
 
+cp $buildRoot/$inputDir/* $buildRoot/$outputDir
 cd $buildRoot/$outputDir
 curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar -zx
