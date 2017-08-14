@@ -12,6 +12,10 @@ while [ $# -gt 0 ]; do
       outputDir=$2
       shift
       ;;
+    -p | --packageName )
+      packageName=$2
+      shift
+      ;;
     * )
       echo "Unrecognized option: $1" 1>&2
       exit 1
@@ -31,8 +35,16 @@ fi
 if [ ! -d "$outputDir" ]; then
   error_and_exit "missing output directory: $outputDir"
 fi
+if [ -z "$packageName" ]; then
+  error_and_exit "missing package name (from task parameters)"
+fi
 
-cd $inputDir
+export GOPATH=$PWD
+srcDir="src/$packageName"
+mkdir -p $srcDir
+cp -R ./$inputDir/* $srcDir/*
+cp $srcDir
+
 glide install
 go build -o $outputDir/check ./check/cmd/check
 go build -o $outputDir/in ./in/cmd/in
