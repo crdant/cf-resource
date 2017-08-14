@@ -21,5 +21,7 @@ if [ ! -d "$outputDir" ]; then
   error_and_exit "missing output directory: $outputDir"
 fi
 
-cd $outputDir
+buildRoot=$PWD
+
+cd $buildRoot/$outputDir
 curl -L "https://cli.run.pivotal.io/stable?release=linux64-binary&source=github" | tar -zx

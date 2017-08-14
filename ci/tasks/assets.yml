@@ -9,8 +9,6 @@ image_resource:
 
 inputs:
   - name: source
-
-outputs:
   - name: build
 
 run:

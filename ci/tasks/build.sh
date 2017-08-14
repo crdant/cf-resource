@@ -35,14 +35,18 @@ if [ -z "$packageName" ]; then
   error_and_exit "missing package name (from task parameters)"
 fi
 
+buildRoot=$PWD
+
 mkdir gopath
-export GOPATH=$PWD/gopath
+export GOPATH=${buildRoot}/gopath
 goPathSrc="${GOPATH}/src/$packageName"
 mkdir -p $goPathSrc
-cp -r $inputDir/* $goPathSrc
+cp -r $buildRoot/$inputDir/* $goPathSrc
 cd $goPathSrc
 
 glide install
-go build -o $outputDir/check ./check/cmd/check
-go build -o $outputDir/in ./in/cmd/in
-go build -o $outputDir/out ./out/cmd/out
+go build -o $buildRoot/$outputDir/check ./check/cmd/check
+go build -o $buildRoot/$outputDir/in ./in/cmd/in
+go build -o $buildRoot/$outputDir/out ./out/cmd/out
+
+cp $buildRoot/$inputDir/Dockerfile $buildRoot/$outputDir
