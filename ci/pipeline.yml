@@ -29,6 +29,7 @@ resources:
   type: semver
   source:
     branch: version
+    file: version
     key: current-version
     initial_version: 0.1.0-rc.0
     uri: ((git-server-base))/((git-username))/((resource-name))
